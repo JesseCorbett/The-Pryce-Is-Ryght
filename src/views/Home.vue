@@ -1,18 +1,46 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <star id="star-left" class="star" color="yellow"></star>
+    <star id="star-right" class="star" color="yellow"></star>
+    <dashboard></dashboard>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import Dashboard from '@/views/game/Dashboard'
+import Star from '@/components/Star'
 
 export default {
-  name: 'home',
+  name: 'Home',
   components: {
-    HelloWorld
+    Dashboard,
+    Star
   }
 }
 </script>
+
+<style scoped>
+.home {
+  height: 100%;
+}
+
+.star {
+  display: none;
+}
+
+@media screen and (min-width: 1024px) {
+  #star-left {
+    display: block;
+    position: fixed;
+    left: 3%;
+    top: 150px;
+  }
+
+  #star-right {
+    display: block;
+    position: fixed;
+    right: 5%;
+    top: 150px;
+  }
+}
+</style>
