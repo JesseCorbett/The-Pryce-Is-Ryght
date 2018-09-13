@@ -1,5 +1,9 @@
 <template>
   <div id="modal-container">
+    <div v-if="game.private" id="private-instructions">
+      Share this link to have your friends join you:<br>
+      https://thepryceisryght.com/{{gameId}}
+    </div>
     <div id="ready-modal">
       <label for="nickname">Nickname</label>
       <input id="nickname" maxlength="14" v-model="nickname" :readonly="ready">
@@ -34,7 +38,8 @@ export default {
   data: function() {
     return {
       nickname: undefined,
-      debounce: false
+      debounce: false,
+      location: window.location
     }
   },
   watch: {
@@ -44,7 +49,7 @@ export default {
   },
   computed: {
     ...mapGetters(['gameOwner']),
-    ...mapState(['game', 'userId', 'ready', 'allReady']),
+    ...mapState(['game', 'gameId', 'userId', 'ready', 'allReady']),
     readyText: function() {
       return this.ready ? "I'm not ready!" : "I'm ready!"
     }
@@ -57,8 +62,21 @@ export default {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+#private-instructions {
+  margin: 0 0 10px;
+  background-color: rgb(26, 97, 26);
+  color: white;
+  border-radius: 30px;
+  width: 550px;
+  height: 60px;
+  font-size: 20px;
+  line-height: 30px;
+  text-align: center;
 }
 
 #ready-modal {
