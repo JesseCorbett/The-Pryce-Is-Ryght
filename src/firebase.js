@@ -93,6 +93,7 @@ const actions = {
     doc.set({
       started: false,
       active: true,
+      readyForNewRound: false,
       private: isPrivate,
       playerCount: 0,
       owner: store.state.userId,
@@ -118,7 +119,15 @@ const actions = {
     store.dispatch('updateGame', { playerData: playerData })
   },
   startGame: store => {
-    if (store.state.allReady) store.dispatch('updateGame', { started: true })
+    if (store.state.allReady) store.dispatch('updateGame', { started: true, readyForNewRound: true })
+  },
+  makeGuess: (store, guess) => {
+    const rounds = store.state.game.rounds
+    rounds[rounds.length - 1].answers[store.state.userId] = guess * 100
+
+    const readyForNew = Object.values(rounds[rounds.length - 1].answers[store.state.userId]).filter(answer => answer === null).length === 0
+
+    store.dispatch('updateGame', { rounds: rounds, readyForNewRound: readyForNew })
   },
   leaveGame: store => store.dispatch('updateGame', { active: false, result: 'Someone left' }).then(() => store.commit('endGame'))
 }

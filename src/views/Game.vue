@@ -1,10 +1,10 @@
 <template>
   <div id="page">
-    <spectate v-if="spectating" :gameId="gameId"></spectate>
+    <spectating v-if="spectating" :gameId="gameId"></spectating>
     <joining v-if="joining" :gameId="pathGameId"></joining>
     <waiting v-if="starting"></waiting>
     <playing v-if="started"></playing>
-    <div id="leave" @click="leave">‹ Leave Game</div>
+    <div id="leave" v-if="gameId" @click="leave">‹ Leave Game</div>
   </div>
 </template>
 
@@ -50,22 +50,23 @@ export default {
       if (this.game !== undefined) {
         if (this.listener) {
           this.listener()
-          this.listener = undefined
-          this.foundGame = undefined
-          this.spectating = false
-          this.joining = false
-        } else {
-          const listener = this.games.doc(this.pathGameId).onSnapshot(game => {
-            this.foundGame = game.data()
-            this.spectating = this.foundGame.started
-            this.joining = !this.foundGame.started
-          })
-          this.listener = listener
         }
+        this.listener = undefined
+        this.foundGame = undefined
+        this.spectating = false
+        this.joining = false
+      } else {
+        const listener = this.games.doc(this.pathGameId).onSnapshot(game => {
+          this.foundGame = game.data()
+          this.spectating = this.foundGame.started
+          this.joining = !this.foundGame.started
+        })
+        this.listener = listener
       }
     }
   }
 }
+
 </script>
 
 <style scoped>
