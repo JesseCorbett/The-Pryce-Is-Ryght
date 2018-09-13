@@ -99,7 +99,8 @@ const actions = {
       players: [],
       playerData: {},
       createdAt: new Date(),
-      rounds: []
+      rounds: [],
+      playerStart: 0
     }).then(() => {
       store.dispatch('joinGame', doc.id)
       resolve()
