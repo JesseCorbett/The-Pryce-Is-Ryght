@@ -1,12 +1,19 @@
 <template>
-  <div class="button-container"><div class="button" @click="$emit('click')">{{label}}</div></div>
+  <div class="button-container"><div :class="{ button: true, disabled: disabled }" @click="doClick">{{label}}</div></div>
 </template>
 
 <script>
 export default {
   name: 'LightButton',
   props: {
-    label: String
+    label: String,
+    disabled: Boolean
+  },
+  methods: {
+    doClick: function() {
+      if (this.disabled) return
+      this.$emit('click')
+    }
   }
 }
 </script>
@@ -48,5 +55,11 @@ export default {
   font-weight: bold;
   font-size: 26px;
   text-align: center;
+}
+
+.button.disabled {
+  cursor: default;
+  border-color: rgb(167, 154, 152);
+  background: linear-gradient(135deg, rgb(167, 154, 152) 0%, rgb(124, 115, 112) 100%);
 }
 </style>

@@ -12,7 +12,7 @@
         <hr>
         <div v-if="allReady">Everyone is ready, click start!</div>
         <div v-if="!allReady">When eveyone is ready, click start!</div>
-        <light-button @click="startGame" label="Start"></light-button>
+        <light-button @click="startGame" :disabled="!allReady" label="Start"></light-button>
       </div>
     </div>
   </div>
