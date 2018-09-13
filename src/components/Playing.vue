@@ -1,9 +1,17 @@
 <template>
   <div id="game">
-    <div id="scores">
+    <div id="roundResult" v-if="allAnswered">
+      {{winnerName}} wins!<br>
+      The real price was ${{round.subjectPrice / 100}}
+    </div>
+    <div id="gameResult" v-if="!game.active">
+      Gam over!<br>
+      {{game.result}}
+    </div>
+    <div id="scores" v-if="round">
       <div class="score" v-for="score in scores" :key="score.uid">
-        <div class="nick">{{game.playerData[score.uid].nickname}}</div>
-        <div class="scoreNumber">{{score.score}}</div>
+        <div class="nick">{{game.playerData[score.uid].nickname}}: {{score.score}}</div>
+        <div class="scoreNumber">{{score.guess === null ? '' : ('$' + (score.guess / 100))}}</div>
       </div>
     </div>
     <div id="picture-container" v-if="round !== undefined">
@@ -72,7 +80,32 @@ export default {
         }
       }
 
-      return this.game.players.map(player => { return { uid: player, score: scores[player] } })
+      return this.game.players.map(player => { return { uid: player, score: scores[player], guess: this.round.answers[player] } })
+    },
+    allAnswered: function() {
+      if (this.round === undefined) return false
+      return Object.values(this.round.answers).filter(answer => answer === null).length === 0
+    },
+    winnerName: function() {
+      if (this.round === undefined) return "Nobody"
+      let winnerScore = -1
+      let winner = undefined
+      for (let index in this.game.players) {
+        const player = this.game.players[index]
+        if (this.round.answers[player] !== null) {
+          const score = this.round.subjectPrice - this.round.answers[player]
+          if (score >= 0 && (score < winnerScore || winnerScore < 0)) {
+            winnerScore = score
+            winner = player
+          }
+        }
+      }
+
+      if (winner === undefined) {
+        return "Nobody"
+      }
+
+      return this.game.playerData[winner].nickname
     }
   }
 }
@@ -88,6 +121,34 @@ export default {
   justify-content: center;
 }
 
+#roundResult {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  width: 300px;
+  height: 300px;
+  background-color: white;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.568);
+  border-radius: 15px;
+}
+
+#gameResult {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  width: 300px;
+  height: 300px;
+  background-color: white;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.568);
+  border-radius: 15px;
+}
+
 #scores {
   display: flex;
   align-items: center;
@@ -98,6 +159,7 @@ export default {
 .score {
   flex-basis: 150px;
   width: 150px;
+  margin: 0 10px 10px;
   background-color: rgb(26, 97, 26);
   display: flex;
   flex-direction: column;
