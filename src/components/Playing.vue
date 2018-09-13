@@ -98,22 +98,29 @@ export default {
 .score {
   flex-basis: 150px;
   width: 150px;
-  background-color: yellow;
+  background-color: rgb(26, 97, 26);
   display: flex;
   flex-direction: column;
   align-items: center;
   border-radius: 3px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.466);
 }
 
 .scoreNumber {
   font-size: 18px;
   font-style: italic;
-  margin-bottom: 5px;
+  margin: 10px 0 -10px;
+  background-color: white;
+  border-radius: 3px;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.466);
+  padding: 10px;
 }
 
 .nick {
   font-size: 22px;
   font-weight: bold;
+  margin: 5px 0 0;
+  color: white;
 }
 
 #picture-container {
