@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex'
 import Dashboard from '@/components/Dashboard'
 import Star from '@/components/Star'
 import Dollar from '@/components/Dollar'
@@ -17,6 +18,17 @@ export default {
     Dashboard,
     Star,
     Dollar
+  },
+  computed: {
+    ...mapGetters(['inGame']),
+    ...mapState(['gameId'])
+  },
+  watch: {
+    inGame: function() {
+      if (this.inGame && this.gameId) {
+        this.$router.replace({ path: '/' + this.gameId })
+      }
+    }
   }
 }
 </script>

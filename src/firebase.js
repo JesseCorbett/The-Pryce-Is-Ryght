@@ -18,43 +18,74 @@ const state = {
   games: firestore.collection('/games'),
   userId: undefined,
   game: undefined,
-  gameListener: undefined
+  gameId: undefined,
+  gameListener: undefined,
+  ready: false,
+  allReady: false
 }
 
 const getters = {
   isAuthenticated: state => state.userId != undefined,
   joiningGame: state => state.gameListener != undefined && state.game == undefined,
-  inGame: state => state.game != undefined
+  inGame: state => state.game != undefined,
+  gameOwner: state => state.game !== undefined && state.game.owner === state.userId
 }
 
 const mutations = {
   setUserId: (state, userId) => state.userId = userId,
   setGame: (state, game) => state.game = game,
+  setGameId: (state, gameId) => state.gameId = gameId,
+  setReady: (state, ready) => state.ready = ready,
+  setAllReady: (state, allReady) => state.allReady = allReady,
   registerGameListener: (state, listener) => state.gameListener = listener,
   endGame: (state) => {
     state.gameListener()
     state.gameListener = undefined
     state.game = undefined
+    state.gameId = undefined
   }
 }
 
 const actions = {
   firebaseInit: store => firebase.auth().onAuthStateChanged(user => {
-    if (user) store.commit('setUserId', user.uid)
-  }),
-  login: store => new Promise(resolve => {
-    if (store.getters.isAuthenticated) {
-      resolve()
-    } else {
-      firebase.auth().signInAnonymously().then(() => resolve())
+    if (user) {
+      store.commit('setUserId', user.uid)
+      store.state.games.where('active', '==', true).where('players', 'array-contains', user.uid).limit(1).get().then(gamesRef => {
+        if (!gamesRef.empty) { store.dispatch('joinGame', gamesRef.docs[0].id) }
+      })
     }
   }),
+  login: store => new Promise(resolve => {
+    if (store.getters.isAuthenticated) { resolve() } else { firebase.auth().signInAnonymously().then(() => resolve()) }
+  }),
+  joinGame: (store, gameId) => {
+    const listener = store.state.games.doc(gameId).onSnapshot(game => {
+      const data = game.data()
+      store.commit('setGame', data)
+
+      if (data.playerData[store.state.userId] !== undefined) {
+        store.commit('setReady', data.playerData[store.state.userId].ready ? true : false)
+      }
+
+      store.commit('setAllReady', Object.values(data.playerData).map(datum => datum.ready).reduce((a, b) => a && b, true))
+
+      if (!data.players.includes(store.state.userId)) {
+        const newPlayerData = data.playerData
+        const newPlayers = data.players
+        newPlayers.push(store.state.userId)
+        newPlayerData[store.state.userId] = { ready: false }
+        store.dispatch('updateGame', { players: newPlayers, playerCount: newPlayers.length, playerData: newPlayerData })
+      }
+    })
+
+    store.commit('registerGameListener', listener)
+    store.commit('setGameId', gameId)
+  },
+  updateGame: (store, update) => store.state.games.doc(store.state.gameId).update(update),
   joinRandomGame: store => store.dispatch('login').then(() => {
     if (store.getters.joiningGame) return
     store.state.games.where('active', '==', true).where('private', '==', false).where('playerCount', '<', 4).limit(1).get().then(gamesRef => {
-      if (gamesRef.empty) {
-        store.dispatch('startPublicGame')
-      }
+      if (gamesRef.empty) { store.dispatch('startPublicGame') } else { store.dispatch('joinGame', gamesRef.docs[0].id) }
     })
   }),
   createGame: (store, isPrivate) => new Promise(resolve => {
@@ -63,27 +94,32 @@ const actions = {
       started: false,
       active: true,
       private: isPrivate,
-      playerCount: 1,
+      playerCount: 0,
       owner: store.state.userId,
-      players: [ store.state.userId ],
+      players: [],
+      playerData: {},
       createdAt: new Date(),
-      updatedAt: new Date(),
       rounds: []
-    }).then(() => resolve())
-
-    const listener = doc.onSnapshot(game => {
-      store.commit('setGame', game)
+    }).then(() => {
+      store.dispatch('joinGame', doc.id)
+      resolve()
     })
+  }),
+  startPublicGame: store => store.dispatch('createGame', false),
+  startPrivateGame: store => store.dispatch('createGame', true),
+  toggleReady: (store, nickname) => {
+    if (!nickname) nickname = "Anonymous"
+    if (store.state.gameId === undefined || store.state.game === undefined) return
+    const playerData = store.state.game.playerData
 
-    store.commit('registerGameListener', listener)
-  }),
-  startPublicGame: store => store.dispatch('createGame', false).then(() => {
-    console.log("Created public game")
-  }),
-  startPrivateGame: store => store.dispatch('createGame', true).then(() => {
-    if (store.getters.joiningGame) return
-    console.log("Created private game")
-  })
+    playerData[store.state.userId].ready = !playerData[store.state.userId].ready
+    playerData[store.state.userId].nickname = nickname
+    store.dispatch('updateGame', { playerData: playerData })
+  },
+  startGame: store => {
+    if (store.state.allReady) store.dispatch('updateGame', { started: true })
+  },
+  leaveGame: store => store.dispatch('updateGame', { active: false, result: 'Someone left' }).then(() => store.commit('endGame'))
 }
 
 export default {
