@@ -15,17 +15,27 @@ firestore.settings({
 
 const state = {
   db: firestore,
+  games: firestore.collection('/games'),
   userId: undefined,
-  game: undefined
+  game: undefined,
+  gameListener: undefined
 }
 
 const getters = {
   isAuthenticated: state => state.userId != undefined,
+  joiningGame: state => state.gameListener != undefined && state.game == undefined,
   inGame: state => state.game != undefined
 }
 
 const mutations = {
-  setUserId: (state, userId) => state.userId = userId
+  setUserId: (state, userId) => state.userId = userId,
+  setGame: (state, game) => state.game = game,
+  registerGameListener: (state, listener) => state.gameListener = listener,
+  endGame: (state) => {
+    state.gameListener()
+    state.gameListener = undefined
+    state.game = undefined
+  }
 }
 
 const actions = {
@@ -39,15 +49,41 @@ const actions = {
       firebase.auth().signInAnonymously().then(() => resolve())
     }
   }),
-  joinRandomGame: store => {
-    store.state.db.collection('/games').where('active', '==', true).where('private', '==', false).where('playerCount', '<', 4).limit(1).get().then(gamesRef => {
+  joinRandomGame: store => store.dispatch('login').then(() => {
+    if (store.getters.joiningGame) return
+    store.state.games.where('active', '==', true).where('private', '==', false).where('playerCount', '<', 4).limit(1).get().then(gamesRef => {
       if (gamesRef.empty) {
-        console.log("No open games found, creating our own")
-
+        store.dispatch('startPublicGame')
       }
     })
-  },
-  startPrivateGame: store => console.log(store)
+  }),
+  createGame: (store, isPrivate) => new Promise(resolve => {
+    const doc = store.state.games.doc()
+    doc.set({
+      started: false,
+      active: true,
+      private: isPrivate,
+      playerCount: 1,
+      owner: store.state.userId,
+      players: [ store.state.userId ],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      rounds: []
+    }).then(() => resolve())
+
+    const listener = doc.onSnapshot(game => {
+      store.commit('setGame', game)
+    })
+
+    store.commit('registerGameListener', listener)
+  }),
+  startPublicGame: store => store.dispatch('createGame', false).then(() => {
+    console.log("Created public game")
+  }),
+  startPrivateGame: store => store.dispatch('createGame', true).then(() => {
+    if (store.getters.joiningGame) return
+    console.log("Created private game")
+  })
 }
 
 export default {

@@ -28,6 +28,6 @@ export default {
 }
 
 .star {
-  filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(6px 6px 6px rgba(0, 0, 0, 0.6));
 }
 </style>
