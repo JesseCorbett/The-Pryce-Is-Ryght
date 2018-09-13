@@ -20,7 +20,7 @@ export default {
 
 
 <style scoped>
-@keyframes blink { 
+@keyframes blink {
    50% { border-color: white; } 
 }
 
