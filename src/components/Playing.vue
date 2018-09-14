@@ -1,12 +1,13 @@
 <template>
   <div id="game">
-    <div id="roundResult" v-if="allAnswered">
-      {{winnerName}} wins!<br>
+    <div class="result" v-if="allAnswered">
+      <b>{{winnerName}} wins!</b><br>
       The real price was ${{round.subjectPrice / 100}}!
     </div>
-    <div id="gameResult" v-if="!game.active">
-      Gam over!<br>
-      {{game.result}}
+    <div class="result" v-if="!game.active">
+      <b>Game over!</b><br>
+      {{game.result}}<br>
+      <div @click="close" id="back-to-menu">Back to menu</div>
     </div>
     <div id="scores">
       <div class="score" v-for="score in scores" :key="score.uid">
@@ -29,7 +30,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import LightButton from '@/components/LightButton'
 
 export default {
@@ -40,9 +41,14 @@ export default {
   data: function() { return { guess: '' } },
   methods: {
     ...mapActions(['makeGuess']),
+    ...mapMutations(['endGame']),
     doGuess: function() {
       this.makeGuess(this.guess)
       this.guess = undefined
+    },
+    close: function() {
+      this.endGame()
+      this.$router.push('/')
     }
   },
   computed: {
@@ -118,7 +124,7 @@ export default {
   height: 100%;
 }
 
-#roundResult {
+.result {
   position: fixed;
   left: 0;
   right: 0;
@@ -138,18 +144,20 @@ export default {
   z-index: 999;
 }
 
-#gameResult {
-  position: fixed;
+#back-to-menu {
+  position: absolute;
+  bottom: -35px;
   left: 0;
   right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  width: 300px;
-  height: 300px;
-  background-color: white;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.568);
-  border-radius: 15px;
+  background-color: rgb(252, 122, 1);
+  border-radius: 30px;
+  margin: 0 auto;
+  width: 250px;
+  height: 60px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+  text-decoration: none;
+  color: white;
+  line-height: 60px;
 }
 
 #scores {
