@@ -7,7 +7,7 @@
     <div class="result" v-if="!game.active">
       <b>Game over!</b><br>
       {{game.result}}<br>
-      <div @click="close" id="back-to-menu">Back to menu</div>
+      <div @click="doClose" id="back-to-menu">Back to menu</div>
     </div>
     <div id="scores">
       <div class="score" v-for="score in scores" :key="score.uid">

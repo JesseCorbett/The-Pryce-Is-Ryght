@@ -1,6 +1,6 @@
 <template>
   <div id="page">
-    <spectating v-if="spectating" :gameId="gameId"></spectating>
+    <spectating v-if="spectating" :game="foundGame"></spectating>
     <joining v-if="joining" :gameId="pathGameId"></joining>
     <waiting v-if="starting"></waiting>
     <playing v-if="started"></playing>
