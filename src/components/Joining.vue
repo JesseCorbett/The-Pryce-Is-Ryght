@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import LightButton from '@/components/LightButton'
 
 export default {
@@ -18,7 +18,16 @@ export default {
   },
   methods: mapActions(['joinGame']),
   props: {
-    gameId: String
+    gameId: String,
+    game: Object
+  },
+  computed: mapState(['userId']),
+  watch: {
+    game: function() {
+      if (this.game !== undefined && this.game.players.includes(this.userId)) {
+        this.joinGame(this.gameId)
+      }
+    }
   }
 }
 </script>

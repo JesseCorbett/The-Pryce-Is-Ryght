@@ -45,12 +45,21 @@ export default {
     starting: function() { return this.game && !this.game.started && this.game.active },
     pathGameId: function() { return this.$route.params.gameId }
   },
+  mounted: function() {
+    const listener = this.games.doc(this.pathGameId).onSnapshot(game => {
+      this.foundGame = game.data()
+      this.spectating = this.foundGame.started
+      this.joining = !this.foundGame.started
+    })
+    this.listener = listener
+  },
   watch: {
     inGame: function() {
+      if (this.listener) {
+        this.listener()
+      }
+
       if (this.game !== undefined) {
-        if (this.listener) {
-          this.listener()
-        }
         this.listener = undefined
         this.foundGame = undefined
         this.spectating = false
