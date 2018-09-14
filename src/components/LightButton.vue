@@ -25,7 +25,7 @@ export default {
 }
 
 .button-container {
-  animation: blink .7s step-end infinite alternate;
+  animation: blink 0.6s step-end infinite alternate;
   display: flex;
   flex-basis: 285px;
   flex-grow: 1;

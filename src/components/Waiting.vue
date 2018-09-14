@@ -5,6 +5,10 @@
       https://thepryceisryght.com/{{gameId}}
     </div>
     <div id="ready-modal">
+      <div id="playerCount">
+        {{playerCountText}}
+        <hr>
+      </div>
       <label for="nickname">Nickname</label>
       <input id="nickname" maxlength="14" v-model="nickname" :readonly="ready">
       <div id="submit"><light-button @click="readyUp" :label="readyText"></light-button></div>
@@ -45,6 +49,12 @@ export default {
   watch: {
     ready: function() {
       this.debounce = false
+    },
+    game: function(newGame, oldGame) {
+      console.log("New:")
+      console.log(newGame)
+      console.log("Old:")
+      console.log(oldGame)
     }
   },
   computed: {
@@ -52,6 +62,21 @@ export default {
     ...mapState(['game', 'gameId', 'userId', 'ready', 'allReady']),
     readyText: function() {
       return this.ready ? "I'm not ready!" : "I'm ready!"
+    },
+    playerCountText: function() {
+      let message
+      if (this.game.players.length === 1) {
+        message = "You're the only one here, you can start by yourself if you want"
+      } else if (this.game.players.length === 2) {
+        message = "There's one other player here"
+      } else {
+        message = "There are " + (this.game.players.length - 1) + " other players in your game"
+      }
+
+      if (this.game.players.length === 4 && !this.game.private) {
+        message = message + ". That's the max for a public game. Go ahead and start!"
+      }
+      return message
     }
   }
 }
@@ -90,6 +115,14 @@ export default {
   padding: 15px;
 }
 
+#playerCount {
+  width: 100%;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+}
+
 label {
   font-size: 24px;
   font-weight: bold;
@@ -108,6 +141,10 @@ label {
   border-color: rgb(255, 164, 79);
   text-align: center;
   font-weight: bold;
+}
+
+#nickname:read-only {
+  background-color: lightgray;
 }
 
 #ownerStart {

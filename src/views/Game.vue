@@ -81,15 +81,13 @@ export default {
 <style scoped>
 #page {
   width: 100%;
-  height: 100%;
 }
 
 #leave {
   position: fixed;
-  left: 10px;
-  top: 10px;
+  left: 5px;
+  top: 5px;
   font-size: 16px;
-  font-style: italic;
   font-weight: bold;
   color: white;
   cursor: pointer;

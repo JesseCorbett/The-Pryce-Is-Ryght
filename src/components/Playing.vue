@@ -20,7 +20,7 @@
       <a id="link" target="_blank" :href="round.subjectUrl">Link to listing</a>
     </div>
     <div id="guesser" v-if="myTurn">
-      <label for="guess">How much is this?</label>
+      <div id="guess-label">How much is this?</div>
       <input id="guess" type="number" placeholder="15.20" v-model="guess">
       <div id="button-container"><light-button @click="doGuess" label="Guess!"></light-button></div>
     </div>
@@ -114,11 +114,6 @@ export default {
 <style scoped>
 #game {
   width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
 #roundResult {
@@ -150,16 +145,23 @@ export default {
 }
 
 #scores {
+  width: 100%;
+  max-width: 800px;
+  height: 125px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin: 0 0 25px;
+  justify-content: space-around;
+  margin: 0 auto;
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 .score {
+  flex-shrink: 0;
+  height: 75px;
   flex-basis: 150px;
-  width: 150px;
-  margin: 0 10px 10px;
+  margin: 0 5px;
+  padding: 5px;
   background-color: rgb(26, 97, 26);
   display: flex;
   flex-direction: column;
@@ -169,6 +171,7 @@ export default {
 }
 
 .scoreNumber {
+  height: 40px;
   font-size: 18px;
   font-style: italic;
   margin: 10px 0 -10px;
@@ -176,6 +179,7 @@ export default {
   border-radius: 3px;
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.466);
   padding: 10px;
+  font-weight: bold;
 }
 
 .nick {
@@ -186,53 +190,63 @@ export default {
 }
 
 #picture-container {
+  position: relative;
+  width: 90%;
+  max-width: 500px;
   padding: 25px;
+  margin: 0 auto;
   border-radius: 15px;
   background-color: rgb(252, 122, 1);
   box-shadow: 6px 8px yellow;
 }
 
 #picture {
-  width: 500px;
-  max-width: 450px;
+  width: 100%;
+  max-width: 500px;
   border-radius: 15px;
+  margin: auto;
 }
 
 #title {
   margin: 10px 0 0;
-  width: 500px;
+  width: 100%; 
+  max-width: 500px;
   font-size: 24px;
   font-weight: bold;
   color: white;
 }
 
 #link {
+  position: absolute;
+  bottom: 3px;
+  right: 10px;
   font-size: 10px;
-  color: black;
+  color: rgb(65, 65, 65);
 }
 
 #guesser {
+  display: block;
   width: 350px;
-  margin: 25px 0 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin: 30px auto 10px;
+  padding: 1px;
   border-radius: 5px;
   background-color: rgb(252, 122, 1);
   box-shadow: 3px 4px yellow;
 }
 
-label {
+#guess-label {
   color: white;
   font-weight: bold;
   font-size: 24px;
-  margin: 10px 0;
+  margin: 15px auto 0;
+  text-align: center;
 }
 
 #guess {
-  width: 100px;
+  display: block;
+  width: 120px;
   height: 40px;
-  margin: 5px 0 0;
+  margin: 10px auto;
   font-size: 24px;
   line-height: 40px;
   border-radius: 10px;
@@ -244,7 +258,6 @@ label {
 
 #guess::-webkit-outer-spin-button, #guess::-webkit-inner-spin-button {
     -webkit-appearance: none;
-    margin: 0;
 }
 
 #button-container {
