@@ -46,12 +46,14 @@ export default {
     pathGameId: function() { return this.$route.params.gameId }
   },
   mounted: function() {
-    const listener = this.games.doc(this.pathGameId).onSnapshot(game => {
-      this.foundGame = game.data()
-      this.spectating = this.foundGame.started
-      this.joining = !this.foundGame.started
-    })
-    this.listener = listener
+    if (this.game === undefined) {
+      const listener = this.games.doc(this.pathGameId).onSnapshot(game => {
+        this.foundGame = game.data()
+        this.spectating = this.foundGame.started
+        this.joining = !this.foundGame.started
+      })
+      this.listener = listener
+    }
   },
   watch: {
     inGame: function() {
@@ -81,6 +83,7 @@ export default {
 <style scoped>
 #page {
   width: 100%;
+  height: 100%;
 }
 
 #leave {

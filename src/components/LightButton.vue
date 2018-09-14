@@ -18,7 +18,6 @@ export default {
 }
 </script>
 
-
 <style scoped>
 @keyframes blink {
    50% { border-color: white; } 

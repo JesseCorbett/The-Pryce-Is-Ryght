@@ -2,23 +2,24 @@
   <div id="game">
     <div id="roundResult" v-if="allAnswered">
       {{winnerName}} wins!<br>
-      The real price was ${{round.subjectPrice / 100}}
+      The real price was ${{round.subjectPrice / 100}}!
     </div>
     <div id="gameResult" v-if="!game.active">
       Gam over!<br>
       {{game.result}}
     </div>
-    <div id="scores" v-if="round">
+    <div id="scores">
       <div class="score" v-for="score in scores" :key="score.uid">
         <div class="nick">{{game.playerData[score.uid].nickname}}: {{score.score}}</div>
         <div class="scoreNumber">{{score.guess === null ? '' : ('$' + (score.guess / 100))}}</div>
       </div>
     </div>
-    <div id="picture-container" v-if="round !== undefined">
+    <div id="picture-container" v-if="round">
       <img id="picture" :src="round.subjectImage" />
       <div id="title" v-html="round.subjectDescription"></div>
-      <a id="link" target="_blank" :href="round.subjectUrl">Link to listing</a>
+      <a id="link" target="_blank" :href="round.subjectUrl">Listing</a>
     </div>
+    <div id="spinner" v-else>Starting game...</div>
     <div id="guesser" v-if="myTurn">
       <div id="guess-label">How much is this?</div>
       <input id="guess" type="number" placeholder="15.20" v-model="guess">
@@ -80,7 +81,7 @@ export default {
         }
       }
 
-      return this.game.players.map(player => { return { uid: player, score: scores[player], guess: this.round.answers[player] } })
+      return this.game.players.map(player => { return { uid: player, score: scores[player], guess: this.round === undefined ? '' : this.round.answers[player] } })
     },
     allAnswered: function() {
       if (this.round === undefined) return false
@@ -114,6 +115,7 @@ export default {
 <style scoped>
 #game {
   width: 100%;
+  height: 100%;
 }
 
 #roundResult {
@@ -123,11 +125,17 @@ export default {
   top: 0;
   bottom: 0;
   margin: auto;
-  width: 300px;
-  height: 300px;
-  background-color: white;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.568);
-  border-radius: 15px;
+  width: 400px;
+  height: 120px;
+  padding: 10px 0;
+  background-color: rgb(26, 97, 26);
+  color: white;
+  text-align: center;
+  font-size: 28px;
+  line-height: 50px;
+  box-shadow: 5px 7px 7px rgba(0, 0, 0, 0.7);
+  border-radius: 5px;
+  z-index: 999;
 }
 
 #gameResult {
@@ -187,6 +195,22 @@ export default {
   font-weight: bold;
   margin: 5px 0 0;
   color: white;
+}
+
+#spinner {
+  width: 300px;
+  height: 100px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 100px;
 }
 
 #picture-container {
