@@ -3,10 +3,8 @@
     <div id="logo-container"><img id="logo" alt="Game logo" src="@/assets/logo.png"></div>
     <div id="content">
       <div id="button-background"></div>
-      <div>
-        <light-button class="start" @click="joinRandomGame" label="Join a random game"></light-button>
-        <light-button class="start" @click="startPrivateGame" label="Start a private game"></light-button>
-      </div>
+      <light-button class="start" @click="joinRandomGame" label="Join a random game"></light-button>
+      <light-button class="start" @click="startPrivateGame" label="Start a private game"></light-button>
     </div>
   </div>
 </template>
@@ -26,17 +24,19 @@ export default {
 
 <style scoped>
 #page {
+  position: absolute;
+  top: 0;
+  bottom: 0;
   width: 100%;
-  height: 100%;
+  padding: 5px 0 25px;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  overflow: hidden;
+  justify-content: space-around;
 }
 
 #logo-container {
-  margin: 3% 0 0;
   max-width: 400px;
   width: 90%;
 }
@@ -47,16 +47,16 @@ export default {
 
 #content {
   position: relative;
-  margin: auto 0 15%;
+  width: 300px;
   box-sizing: border-box;
 }
 
 #button-background {
   position: absolute;
-  top: -10px;
-  bottom: -10px;
-  left: -10px;
-  right: -10px;
+  top: -20px;
+  bottom: -20px;
+  left: -25px;
+  right: -25px;
   background-color: rgb(252, 122, 1);
   transform: skew(15deg);
   box-shadow: 6px 8px yellow;
@@ -65,6 +65,6 @@ export default {
 }
 
 .start {
-  margin: 15px 25px;
+  margin: 10px auto;
 }
 </style>
