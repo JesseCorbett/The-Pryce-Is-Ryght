@@ -3,8 +3,10 @@
     <div id="logo-container"><img id="logo" alt="Game logo" src="@/assets/logo.png"></div>
     <div id="content">
       <div id="button-background"></div>
-      <light-button @click="joinRandomGame" label="Join a random game"></light-button>
-      <light-button @click="startPrivateGame" label="Start a private game"></light-button>
+      <div>
+        <light-button class="start" @click="joinRandomGame" label="Join a random game"></light-button>
+        <light-button class="start" @click="startPrivateGame" label="Start a private game"></light-button>
+      </div>
     </div>
   </div>
 </template>
@@ -34,7 +36,7 @@ export default {
 }
 
 #logo-container {
-  margin: 5% 0 0;
+  margin: 3% 0 0;
   max-width: 400px;
   width: 90%;
 }
@@ -45,37 +47,8 @@ export default {
 
 #content {
   position: relative;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  margin: 10px 0 15%;
+  margin: auto 0 15%;
   box-sizing: border-box;
-}
-
-@media only screen and (max-width: 600px) and (min-width: 401px) {
-  #logo-container {
-    margin-top: 5%;
-  }
-
-  #content {
-    min-width: 410px;
-    min-height: 220px;
-    margin-bottom: 10%;
-  }
-}
-
-@media only screen and (max-width: 400px) {
-  #logo-container {
-    margin-top: 3px;
-  }
-
-  #content {
-    min-width: 410px;
-    min-height: 220px;
-    margin-bottom: 0;
-  }
 }
 
 #button-background {
@@ -91,7 +64,7 @@ export default {
   border-radius: 4px;
 }
 
-.container:hover {
-  border-color: white;
+.start {
+  margin: 15px 25px;
 }
 </style>
