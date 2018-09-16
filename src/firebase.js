@@ -84,7 +84,7 @@ const actions = {
   updateGame: (store, update) => store.state.games.doc(store.state.gameId).update(update),
   joinRandomGame: store => store.dispatch('login').then(() => {
     if (store.getters.joiningGame) return
-    store.state.games.where('active', '==', true).where('started', '==', false).where('private', '==', false).where('playerCount', '<', 4).limit(1).get().then(gamesRef => {
+    store.state.games.where('started', '==', false).where('playerCount', '<', 4).where('private', '==', false).where('active', '==', true).limit(1).get().then(gamesRef => {
       if (gamesRef.empty) { store.dispatch('startPublicGame') } else { store.dispatch('joinGame', gamesRef.docs[0].id) }
     })
   }),

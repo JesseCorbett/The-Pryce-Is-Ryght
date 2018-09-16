@@ -4,6 +4,8 @@
       "collectionId": "games",
       "fields": [
         { "fieldPath": "active", "mode": "ASCENDING" },
+        { "fieldPath": "private", "mode": "ASCENDING" },
+        { "fieldPath": "started", "mode": "ASCENDING" },
         { "fieldPath": "playerCount", "mode": "ASCENDING" }
       ]
     }
