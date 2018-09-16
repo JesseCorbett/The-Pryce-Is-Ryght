@@ -6,7 +6,7 @@ const API_KEY = "5z4cm376tbtt9cpv3ec3yaj2"
 const baseEtsyUrl = terms => "https://openapi.etsy.com/v2/listings/active?keywords=" + terms + "&limit=200&includes=Images:1&api_key="  + API_KEY
 const pick = size => Math.floor((Math.random() - 0.00001) * size)
 
-const topics = ["juggalo", "otherkin", "trump", "anthro", "sexual"]
+const topics = ["juggalo", "otherkin", "haunted doll", "anthro", "fetish"]
 const topic = () => topics[Math.floor(Math.random() * topics.length)]
 
 exports.processNewRound = functions.firestore.document('games/{gameId}').onUpdate((change, context) => {
