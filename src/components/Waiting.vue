@@ -49,12 +49,6 @@ export default {
   watch: {
     ready: function() {
       this.debounce = false
-    },
-    game: function(newGame, oldGame) {
-      console.log("New:")
-      console.log(newGame)
-      console.log("Old:")
-      console.log(oldGame)
     }
   },
   computed: {

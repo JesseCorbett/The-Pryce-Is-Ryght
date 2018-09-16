@@ -9,14 +9,14 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 import Spectating from '@/components/Spectating'
 import Waiting from '@/components/Waiting'
 import Playing from '@/components/Playing'
 import Joining from '@/components/Joining'
 
 export default {
-  name: 'Game',
+  name: 'InGame',
   components: {
     Spectating,
     Waiting,
@@ -25,6 +25,7 @@ export default {
   },
   methods: {
     ...mapActions(['leaveGame']),
+    ...mapMutations(['endGame']),
     leave: function() {
       this.leaveGame()
       this.$router.replace({ path: '/' })
@@ -39,7 +40,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['gameId', 'game', 'games']),
+    ...mapState(['gameId', 'game', 'games', 'userId']),
     ...mapGetters(['joiningGame', 'inGame']),
     started: function() { return this.inGame && this.game && this.game.started },
     starting: function() { return this.game && !this.game.started && this.game.active },
@@ -74,10 +75,22 @@ export default {
         })
         this.listener = listener
       }
+    },
+    game: function(newValue, oldValue) {
+      if (newValue === undefined && oldValue !== undefined) {
+        this.endGame()
+        this.$router.push('/')
+        alert("The game closed! Sorry!")
+      }
+
+      if (!newValue.players.includes(this.userId) && oldValue.players.includes(this.userId)) {
+        this.endGame()
+        this.$router.push('/')
+        alert("You were kicked for inactivity! Sorry!")
+      }
     }
   }
 }
-
 </script>
 
 <style scoped>

@@ -38,3 +38,21 @@ const getResult = (change, game, newPlayerStart) => fetch(baseEtsyUrl(topic())).
     readyForNewRound: false
   })
 }).catch(() => getResult(change, game, newPlayerStart))
+
+exports.checkOwnerAck = functions.firestore.document('games/{gameId}').onUpdate(change => {
+  const newValues = change.after.data()
+  const oldValues = change.before.data()
+
+  if (newValues.owner !== oldValues.owner || newValues.ownerAck !== oldValues.ownerAck) {
+    return true
+  }
+
+  if ((newValues.started && !oldValues.started) || (newValues.rounds.length > 0 && Object.values(newValues.rounds[newValues.rounds.length - 1].answers).filter(answer => answer === null).length === 0)) {
+    let newPlayerStart = newValues.playerStart + 1
+    if (newPlayerStart === newValues.players.length) newPlayerStart = 0
+
+    return getResult(change, newValues, newPlayerStart)
+  }
+
+  return true
+});

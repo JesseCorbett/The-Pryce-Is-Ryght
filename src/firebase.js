@@ -60,6 +60,8 @@ const actions = {
   }),
   joinGame: (store, gameId) => {
     const listener = store.state.games.doc(gameId).onSnapshot(game => {
+      const lastUpdate = store.state.game ? store.state.game.ownerAck : undefined
+      const hasPlayerAlready = store.state.game ? store.state.game.players.includes(store.state.userId) : false
       const data = game.data()
       store.commit('setGame', data)
 
@@ -69,12 +71,16 @@ const actions = {
 
       store.commit('setAllReady', Object.values(data.playerData).map(datum => datum.ready).reduce((a, b) => a && b, true))
 
-      if (!data.players.includes(store.state.userId)) {
+      if (!data.players.includes(store.state.userId) && !hasPlayerAlready) {
         const newPlayerData = data.playerData
         const newPlayers = data.players
         newPlayers.push(store.state.userId)
         newPlayerData[store.state.userId] = { ready: false }
         store.dispatch('updateGame', { players: newPlayers, playerCount: newPlayers.length, playerData: newPlayerData })
+      }
+
+      if (store.getters.gameOwner && lastUpdate === data.ownerAck) {
+        store.state.games.doc(game.id).update({ ownerAck: Date.now() })
       }
     })
 
