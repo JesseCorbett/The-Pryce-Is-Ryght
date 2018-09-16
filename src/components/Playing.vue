@@ -1,6 +1,6 @@
 <template>
   <div id="game">
-    <game :game="game" :round="round"></game>
+    <game :game="game" :round="round" :playing="true"></game>
     <div id="guesser" v-if="myTurn">
       <div id="guess-label">How much is this?</div>
       <input id="guess" type="number" placeholder="0.00" v-model="guess">
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import LightButton from '@/components/LightButton'
 import Game from '@/components/Game'
 
@@ -23,14 +23,9 @@ export default {
   data: function() { return { guess: '' } },
   methods: {
     ...mapActions(['makeGuess']),
-    ...mapMutations(['endGame']),
     doGuess: function() {
       this.makeGuess(this.guess)
       this.guess = undefined
-    },
-    close: function() {
-      this.endGame()
-      this.$router.push('/')
     }
   },
   computed: {
@@ -55,58 +50,6 @@ export default {
 #game {
   width: 100%;
   height: 100%;
-}
-
-.result {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  width: 400px;
-  height: 120px;
-  padding: 10px 0;
-  background-color: rgb(26, 97, 26);
-  color: white;
-  text-align: center;
-  font-size: 28px;
-  line-height: 50px;
-  box-shadow: 5px 7px 7px rgba(0, 0, 0, 0.7);
-  border-radius: 5px;
-  z-index: 999;
-}
-
-#back-to-menu {
-  position: absolute;
-  bottom: -35px;
-  left: 0;
-  right: 0;
-  background-color: rgb(252, 122, 1);
-  border-radius: 30px;
-  margin: 0 auto;
-  width: 250px;
-  height: 60px;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
-  text-decoration: none;
-  color: white;
-  line-height: 60px;
-}
-
-#spinner {
-  width: 300px;
-  height: 100px;
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  color: white;
-  font-size: 30px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 100px;
 }
 
 #guesser {

@@ -1,6 +1,6 @@
 <template>
   <div id="spectator">
-    <game :game="game"></game>
+    <game :game="game" :round="round" :playing="false"></game>
   </div>
 </template>
 
@@ -19,6 +19,11 @@ export default {
   methods: mapActions(['login']),
   beforeMount: function() {
     this.login()
+  },
+  computed: {
+    round: function() {
+      return this.game.rounds[this.game.rounds.length - 1]
+    }
   }
 }
 </script>

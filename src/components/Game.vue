@@ -9,7 +9,7 @@
       {{game.result}}<br>
       <div @click="doClose" id="back-to-menu">Back to menu</div>
     </div>
-    <scores :game="game"></scores>
+    <scores :game="game" :round="round"></scores>
     <div id="picture-container" v-if="round">
       <img id="picture" :src="round.subjectImage" />
       <div id="title" v-html="round.subjectDescription"></div>
@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import Scores from '@/components/Scores'
 
 export default {
@@ -29,7 +30,17 @@ export default {
   },
   props: {
     game: Object,
-    round: Object
+    round: Object,
+    playing: Boolean
+  },
+  methods: {
+    ...mapMutations(['endGame']),
+    doClose: function() {
+      if (this.playing) {
+        this.endGame()
+      }
+      this.$router.push('/')
+    }
   },
   computed: {
     allAnswered: function() {
@@ -96,5 +107,57 @@ export default {
   font-size: 10px;
   color: rgb(65, 65, 65);
 }
-</style>
 
+.result {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  width: 400px;
+  height: 120px;
+  padding: 10px 0;
+  background-color: rgb(26, 97, 26);
+  color: white;
+  text-align: center;
+  font-size: 28px;
+  line-height: 50px;
+  box-shadow: 5px 7px 7px rgba(0, 0, 0, 0.7);
+  border-radius: 5px;
+  z-index: 999;
+}
+
+#back-to-menu {
+  cursor: pointer;
+  position: absolute;
+  bottom: -35px;
+  left: 0;
+  right: 0;
+  background-color: rgb(252, 122, 1);
+  border-radius: 30px;
+  margin: 0 auto;
+  width: 250px;
+  height: 60px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+  text-decoration: none;
+  color: white;
+  line-height: 60px;
+}
+
+#spinner {
+  width: 300px;
+  height: 100px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 100px;
+}
+</style>

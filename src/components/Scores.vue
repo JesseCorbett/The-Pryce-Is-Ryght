@@ -2,7 +2,7 @@
   <div id="scores">
     <div class="score" v-for="score in scores" :key="score.uid">
       <div class="nick">{{game.playerData[score.uid].nickname}}: {{score.score}}</div>
-      <div class="scoreNumber">{{score.guess === null ? '' : ('$' + (score.guess / 100))}}</div>
+      <div class="scoreNumber">{{score.guess ? ('$' + (score.guess / 100)) : score.uid === playerTurn ? 'Guessing' : ''}}</div>
     </div>
   </div>
 </template>
@@ -11,7 +11,8 @@
 export default {
   name: 'Scores',
   props: {
-    game: Object
+    game: Object,
+    round: Object
   },
   computed: {
     scores: function() {
@@ -37,6 +38,15 @@ export default {
       }
 
       return this.game.players.map(player => { return { uid: player, score: scores[player], guess: this.round === undefined ? '' : this.round.answers[player] } })
+    },
+    playerTurn: function() {
+      const answerCount = Object.values(this.round.answers).filter(answer => answer !== null).length
+
+      let playerIndex = answerCount + this.game.playerStart
+      if (playerIndex >= this.game.playerCount) {
+        playerIndex -= this.game.playerCount
+      }
+       return this.game.players[playerIndex]
     }
   }
 }
