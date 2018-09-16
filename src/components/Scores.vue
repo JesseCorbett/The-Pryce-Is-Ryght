@@ -19,27 +19,30 @@ export default {
       const scores = {}
       this.game.players.forEach(player => scores[player] = 0)
       
-      let roundI
-      for (roundI = 0; roundI < this.game.rounds.length - 1; roundI++) {
-        let bestScore = -1
-        let winner = undefined
+      if (this.round !== undefined) {
+        let roundI
+        for (roundI = 0; roundI < this.game.rounds.length - 1; roundI++) {
+          let bestScore = -1
+          let winner = undefined
 
-        for (let player in this.game.players) {
-          const score = this.game.rounds[roundI].subjectPrice - this.game.rounds[roundI].answers[this.game.players[player]]
-          if (score >= 0 && (score < bestScore || bestScore < 0)) {
-            bestScore = score
-            winner = this.game.players[player]
+          for (let player in this.game.players) {
+            const score = this.game.rounds[roundI].subjectPrice - this.game.rounds[roundI].answers[this.game.players[player]]
+            if (score >= 0 && (score < bestScore || bestScore < 0)) {
+              bestScore = score
+              winner = this.game.players[player]
+            }
           }
-        }
 
-        if (winner !== undefined) {
-          scores[winner] += 100
+          if (winner !== undefined) {
+            scores[winner] += 100
+          }
         }
       }
 
       return this.game.players.map(player => { return { uid: player, score: scores[player], guess: this.round === undefined ? '' : this.round.answers[player] } })
     },
     playerTurn: function() {
+      if (this.round === undefined) return
       const answerCount = Object.values(this.round.answers).filter(answer => answer !== null).length
 
       let playerIndex = answerCount + this.game.playerStart

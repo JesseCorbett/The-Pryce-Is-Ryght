@@ -1,0 +1,32 @@
+[debug] [2018-09-16T19:40:41.762Z] ----------------------------------------------------------------------
+[debug] [2018-09-16T19:40:41.765Z] Command:       /usr/bin/node /usr/bin/firebase deploy --only hosting
+[debug] [2018-09-16T19:40:41.765Z] CLI Version:   4.2.1
+[debug] [2018-09-16T19:40:41.765Z] Platform:      linux
+[debug] [2018-09-16T19:40:41.765Z] Node Version:  v8.11.4
+[debug] [2018-09-16T19:40:41.765Z] Time:          Sun Sep 16 2018 14:40:41 GMT-0500 (DST)
+[debug] [2018-09-16T19:40:41.765Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-09-16T19:40:41.777Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-09-16T19:40:41.778Z] > authorizing via signed-in user
+[debug] [2018-09-16T19:40:41.780Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/the-pryce-is-ryght  
+ 
+[debug] [2018-09-16T19:40:42.196Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'the-pryce-is-ryght'...
+[info] 
+[info] i  deploying hosting
+[debug] [2018-09-16T19:40:44.961Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/the-pryce-is-ryght/versions  
+
+[debug] [2018-09-16T19:40:45.812Z] <<< HTTP RESPONSE 200
+[info] i  hosting[the-pryce-is-ryght]: beginning deploy...
+[info] i  hosting[the-pryce-is-ryght]: found 9 files in dist
+[debug] [2018-09-16T19:40:46.355Z] [hosting] hash cache [ZGlzdA] stored for 9 files
+[debug] [2018-09-16T19:40:46.355Z] [hosting][hash queue][FINAL]
+[debug] [2018-09-16T19:40:46.355Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/the-pryce-is-ryght/versions/3d72f434181e42c7:populateFiles  
+ <request body omitted>
+[debug] [2018-09-16T19:40:46.898Z] <<< HTTP RESPONSE 200
+[debug] [2018-09-16T19:40:46.901Z] [hosting][populate queue][FINAL]
+[debug] [2018-09-16T19:40:46.901Z] [hosting] uploads queued: 4
+[debug] [2018-09-16T19:40:48.924Z] [hosting][upload queue][FINAL]
+[info] ✔  hosting[the-pryce-is-ryght]: file upload complete
+[debug] [2018-09-16T19:40:48.931Z] [hosting] deploy completed after 3119ms

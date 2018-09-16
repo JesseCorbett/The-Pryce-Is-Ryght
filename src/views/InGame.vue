@@ -82,12 +82,6 @@ export default {
         this.$router.push('/')
         alert("The game closed! Sorry!")
       }
-
-      if (!newValue.players.includes(this.userId) && oldValue.players.includes(this.userId)) {
-        this.endGame()
-        this.$router.push('/')
-        alert("You were kicked for inactivity! Sorry!")
-      }
     }
   }
 }

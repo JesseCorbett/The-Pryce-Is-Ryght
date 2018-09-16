@@ -1,6 +1,9 @@
 <template>
   <div id="page">
-    <div id="logo-container"><img id="logo" alt="Game logo" src="@/assets/logo.png"></div>
+    <div id="logo-container">
+      <img id="logo" alt="Game logo" src="@/assets/logo.png">
+      <div id="description">Guess the closest without going over,<br>that's how you win The Pryce is Ryght!</div>
+    </div>
     <div id="content">
       <div id="button-background"></div>
       <light-button class="start" @click="joinRandomGame" label="Join a random game"></light-button>
@@ -37,12 +40,20 @@ export default {
 }
 
 #logo-container {
-  max-width: 400px;
+  max-width: 500px;
   width: 90%;
 }
 
 #logo {
   width: 100%;
+}
+
+#description {
+  color: white;
+  font-size: 26px;
+  line-height: 40px;
+  font-weight: bold;
+  text-align: center;
 }
 
 #content {

@@ -37,9 +37,15 @@ export default {
       }
     },
     myTurn: function() {
-      return this.round !== undefined && this.playerIndex === (this.game.playerStart + Object.values(this.round.answers).filter(answer => answer !== null).length)
+      if (this.game === undefined || this.round === undefined) return false
+      let currentPlayer = this.game.playerStart + Object.values(this.round.answers).filter(answer => answer !== null).length
+      if (currentPlayer >= this.game.playerCount) {
+        currentPlayer -= this.game.playerCount
+      }
+      return this.round !== undefined && this.playerIndex === currentPlayer
     },
     round: function() {
+      if (this.game === undefined) return
       return this.game.rounds[this.game.rounds.length - 1]
     }
   }

@@ -21,7 +21,7 @@ exports.processNewRound = functions.firestore.document('games/{gameId}').onUpdat
   const newValues = change.after.data()
   const oldValues = change.before.data()
 
-  if ((newValues.started && !oldValues.started) || (newValues.rounds.length > 0 && Object.values(newValues.rounds[newValues.rounds.length - 1].answers).filter(answer => answer === null).length === 0)) {
+  if (newValues.readyForNewRound && ! oldValues.readyForNewRound) {
     let newPlayerStart = newValues.playerStart + 1
     if (newPlayerStart === newValues.players.length) newPlayerStart = 0
 
@@ -45,43 +45,43 @@ const getResult = (change, game, newPlayerStart) => fetch(baseEtsyUrl(topic())).
     playerStart: newPlayerStart,
     readyForNewRound: false
   })
-}).catch(() => getResult(change, game, newPlayerStart))
+})
 
 
-exports.checkOwnerAck = functions.firestore.document('games/{gameId}').onUpdate((change, context) => {
-  const newValues = change.after.data()
-  const oldValues = change.before.data()
+// exports.checkOwnerAck = functions.firestore.document('games/{gameId}').onUpdate((change, context) => {
+//   const newValues = change.after.data()
+//   const oldValues = change.before.data()
 
-  if (newValues.owner !== oldValues.owner || newValues.ownerAck !== oldValues.ownerAck) {
-    return true
-  }
+//   if (newValues.owner !== oldValues.owner || newValues.ownerAck !== oldValues.ownerAck) {
+//     return true
+//   }
 
-  console.log("Checking if owner disconnected")
+//   console.log("Checking if owner disconnected")
 
-  const timestamp = Date.now()
-  return db.collection('/games').doc(context.params.gameId).get().then(ref => {
-    const lastAck = ref.data().ownerAck
+//   const timestamp = Date.now()
+//   return db.collection('/games').doc(context.params.gameId).get().then(ref => {
+//     const lastAck = ref.data().ownerAck
 
-    console.log("Now: " + timestamp)
-    console.log("Last Ack: " + lastAck)
+//     console.log("Now: " + timestamp)
+//     console.log("Last Ack: " + lastAck)
 
-    if (timestamp > lastAck) {
-      console.log("Owner disconnected")
+//     if (timestamp > lastAck) {
+//       console.log("Owner disconnected")
 
-      if (newValues.playerCount === 1) {
-        return change.after.ref.update({
-          active: false,
-          players: []
-        })
-      }
+//       if (newValues.playerCount === 1) {
+//         return change.after.ref.update({
+//           active: false,
+//           players: []
+//         })
+//       }
 
-      const newPlayers = newValues.players.filter(playerId => playerId !== newValues.owner)
+//       const newPlayers = newValues.players.filter(playerId => playerId !== newValues.owner)
       
-      return change.after.ref.update({
-        players: newPlayers,
-        playerCount: newPlayers.length,
-        owner: newPlayers[0]
-      })
-    }
-  })
-});
+//       return change.after.ref.update({
+//         players: newPlayers,
+//         playerCount: newPlayers.length,
+//         owner: newPlayers[0]
+//       })
+//     }
+//   })
+// });
