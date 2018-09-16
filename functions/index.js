@@ -14,22 +14,22 @@ exports.processNewRound = functions.firestore.document('games/{gameId}').onUpdat
   const oldValues = change.before.data()
 
   if ((newValues.started && !oldValues.started) || (newValues.rounds.length > 0 && Object.values(newValues.rounds[newValues.rounds.length - 1].answers).filter(answer => answer === null).length === 0)) {
-    const newPlayerStart = newValues.playerStart + 1
+    let newPlayerStart = newValues.playerStart + 1
     if (newPlayerStart === newValues.players.length) newPlayerStart = 0
 
-    return getResult(newGame, newPlayerStart)
+    return getResult(change, newValues, newPlayerStart)
   }
 
   return true
 });
 
-const getResult = (game, newPlayerStart) => fetch(baseEtsyUrl(topic())).then(result => result.json()).then(result => {
+const getResult = (change, game, newPlayerStart) => fetch(baseEtsyUrl(topic())).then(result => result.json()).then(result => {
   const picked = result.results[pick(result.results.length)]
 
   const round = { answers: {}, subjectDescription: picked.title, subjectImage: picked.Images[0].url_fullxfull, subjectPrice: picked.price * 100, subjectUrl: picked.url }
-  newValues.players.forEach(id => round.answers[id] = null)
+  game.players.forEach(id => round.answers[id] = null)
 
-  const rounds = newValues.rounds
+  const rounds = game.rounds
   rounds.push(round)
 
   return change.after.ref.update({
@@ -37,4 +37,4 @@ const getResult = (game, newPlayerStart) => fetch(baseEtsyUrl(topic())).then(res
     playerStart: newPlayerStart,
     readyForNewRound: false
   })
-}).catch(() => getResult(game, newPlayerStart))
+}).catch(() => getResult(change, game, newPlayerStart))

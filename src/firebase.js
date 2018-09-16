@@ -8,7 +8,7 @@ firebase.initializeApp({
   apiKey: "AIzaSyD8OrejztLLpLfCshpIRM8eb_hJjNIK7gs"
 })
 
-const firestore = firebase.firestore();
+const firestore = firebase.firestore()
 firestore.settings({
   timestampsInSnapshots: true
 })
