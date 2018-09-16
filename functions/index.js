@@ -14,7 +14,7 @@ exports.processNewRound = functions.firestore.document('games/{gameId}').onUpdat
   const oldValues = change.before.data()
 
   if ((newValues.started && !oldValues.started) || (newValues.rounds.length > 0 && Object.values(newValues.rounds[newValues.rounds.length - 1].answers).filter(answer => answer === null).length === 0)) {
-    const newPlayerStart = newValues.playerStart++
+    const newPlayerStart = newValues.playerStart + 1
     if (newPlayerStart === newValues.players.length) newPlayerStart = 0
 
     return fetch(baseEtsyUrl(topic())).then(result => result.json()).then(result => {
