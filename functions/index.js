@@ -8,13 +8,13 @@ const API_KEY = ""
 const baseEtsyUrl = terms => "https://openapi.etsy.com/v2/listings/active?keywords=" + terms + "&limit=200&includes=Images:1&api_key="  + API_KEY
 const pick = size => Math.floor((Math.random() - 0.00001) * size)
 
-const topics = ["juggalo", "otherkin", "haunted doll", "anthro", "fetish"]
+const topics = ["haunted doll", "tattoo" /* Other topics you can think of to be picked from */]
 const topic = () => topics[Math.floor(Math.random() * topics.length)]
 
 
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
-const settings = {/* your settings... */ timestampsInSnapshots: true};
+const settings = { timestampsInSnapshots: true };
 db.settings(settings)
 
 exports.processNewRound = functions.firestore.document('games/{gameId}').onUpdate(change => {
